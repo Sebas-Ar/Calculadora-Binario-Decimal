@@ -1,88 +1,153 @@
+import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
+import Swal from 'sweetalert2'
 
-const Home = () => (
-  <div className="container">
-    <Head>
-      <title>Create Next App</title>
-      <link rel="icon" href="/favicon.ico" />
-    </Head>
+const Home = () => {
 
-    <main>
-      <h1 className="title">
-        Welcome to <a href="https://nextjs.org">Next.js!</a>
-      </h1>
+  const [numero, setNumero] = useState(0);
+  const [result, setResult] = useState('');
 
-      <p className="description">
-        Get started by editing <code>pages/index.js</code>
-      </p>
+  useEffect(() => {
+    var numeroDividido = numero /* asignamos el numero ingresado a una variable */
+    var vector = [] /* inicializamos el vector donde guardaremos los binarios */
+    var contador = 0 /* inicializamos un contador, el cual indicara la posicion del vector */
 
-      <div className="grid">
-        <a href="https://nextjs.org/docs" className="card">
-          <h3>Documentation &rarr;</h3>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+    while (numeroDividido > 0) { /* implementamos un while que irá dividiendo el numero hasta que este sea menor a 0 */
 
-        <a href="https://nextjs.org/learn" className="card">
-          <h3>Learn &rarr;</h3>
-          <p>Learn about Next.js in an interactive course with quizzes!</p>
-        </a>
+      let division = numeroDividido /= 2 /* dividimos el numero entre 2 */
+      if(division % 1 === 0) { /* si el resultado es un numero entero */
+        vector[contador] = 0 /* asignamos un 0 a esa posicion del vector */
+      } else { /* sino */
+        vector[contador] = 1 /* asignamos un 1 a esa posicion del vector */
+      }
+      contador += 1 /* aumentamos el contador para pasar a la siguiente posicion del vector */
+      numeroDividido = Math.floor(division); /* redondeamos el numero dividido por debajo, y lo reasgnamos al 
+                                                valor que se leerá al principio del bucle */
 
+    }
+    setResult(vector.reverse().toString().replace(/,/g,'')) /* le damos la vuelta al vector, lo convertimos en una 
+                                                             cadena de texto y retiramos las ',' */
+  
+  }, [numero])
+
+  useEffect(() => {
+    if (numero < 0) {
+      setNumero(0)
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Número incorrecto',
+        footer: 'Ha ingresado un número negativo'
+      })
+    }
+
+    if(numero%1 !== 0) {
+      setNumero(0)
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Número incorrecto',
+        footer: 'Debe ingrsar un numero entero'
+      })
+    }
+  }, [numero])
+
+  return (
+    <div className="container">
+      <Head>
+        <title>Teleco II</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+
+        <h1>CALCULADORA<br/>DECIMAL A BINARIO</h1>
+      <main>
+        <label> Ingrese el número a Convertir:</label>
+        <br/>
+        <input type="number" value={numero ? numero : ''} onChange={e => { setNumero(e.target.value)}}/>
+        <p>el resultado es: <br/>{numero}<br/> {result} </p>
+      </main>
+
+      <footer>
+        <p>Camila Hernandez | Sebastian Arias | Camilo Duran</p>
         <a
-          href="https://github.com/zeit/next.js/tree/master/examples"
-          className="card"
+          href="https://www.usta.edu.co/"
+          target="_blank"
+          rel="noopener noreferrer"
         >
-          <h3>Examples &rarr;</h3>
-          <p>Discover and deploy boilerplate example Next.js projects.</p>
-        </a>
+          Universidad Santo Tomás <img src="/img/usta.png" alt="ZEIT Logo" />
+        </a> <br/>
+      </footer>
 
-        <a
-          href="https://zeit.co/new?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          className="card"
-        >
-          <h3>Deploy &rarr;</h3>
-          <p>
-            Instantly deploy your Next.js site to a public URL with ZEIT Now.
-          </p>
-        </a>
-      </div>
-    </main>
+      <style jsx>{`
 
-    <footer>
-      <a
-        href="https://zeit.co?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Powered by <img src="/zeit.svg" alt="ZEIT Logo" />
-      </a>
-    </footer>
-
-    <style jsx>{`
       .container {
-        min-height: 100vh;
-        padding: 0 0.5rem;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        height: 100vh;
+        display: grid;
+        grid-template-rows: 250px 1fr 100px;
+      }
+
+      * {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      img {
+       width: 30px; 
+      }
+
+      a {
+        text-decoration: none;
+        color: white;
+      }
+
+      h1 {
+        text-align: center;
+        justify-self: center;
+        align-self: center;
+        color: white;
+        font-size: 40px
+      }
+
+      label, p {
+        text-align: center;
+        color: white;
+      }
+
+      :global(body) {
+        background: linear-gradient(0deg, #2c3e50 0%, #3498db 100%);
       }
 
       main {
-        padding: 5rem 0;
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        
+        justify-self: center;
+        align-self: flex-start;
+        background-color: #33333377;
+        display: grid;
+        justify-items: center;
+        padding: 20px;
+        border-radius: 20px;
+      }
+
+      input {
+        text-align: center;
+        padding: 7px 0;
+        border-radius: 15px;
+        border: none;
+        outline: none;
+      }
+
+      button {
+        padding: 10px 15px;
+        border-radius: 20px;
+        border: none;
+        color: #3498db;
+        background: white
       }
 
       footer {
         width: 100%;
         height: 100px;
         border-top: 1px solid #eaeaea;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        display: grid;
       }
 
       footer img {
@@ -95,109 +160,22 @@ const Home = () => (
         align-items: center;
       }
 
-      a {
-        color: inherit;
-        text-decoration: none;
-      }
-
-      .title a {
-        color: #0070f3;
-        text-decoration: none;
-      }
-
-      .title a:hover,
-      .title a:focus,
-      .title a:active {
-        text-decoration: underline;
-      }
-
-      .title {
-        margin: 0;
-        line-height: 1.15;
-        font-size: 4rem;
-      }
-
-      .title,
-      .description {
-        text-align: center;
-      }
-
-      .description {
-        line-height: 1.5;
-        font-size: 1.5rem;
-      }
-
-      code {
-        background: #fafafa;
-        border-radius: 5px;
-        padding: 0.75rem;
-        font-size: 1.1rem;
-        font-family: Menlo, Monaco, Lucida Console, Liberation Mono,
-          DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
-      }
-
-      .grid {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-wrap: wrap;
-
-        max-width: 800px;
-        margin-top: 3rem;
-      }
-
-      .card {
-        margin: 1rem;
-        flex-basis: 45%;
-        padding: 1.5rem;
-        text-align: left;
-        color: inherit;
-        text-decoration: none;
-        border: 1px solid #eaeaea;
-        border-radius: 10px;
-        transition: color 0.15s ease, border-color 0.15s ease;
-      }
-
-      .card:hover,
-      .card:focus,
-      .card:active {
-        color: #0070f3;
-        border-color: #0070f3;
-      }
-
-      .card h3 {
-        margin: 0 0 1rem 0;
-        font-size: 1.5rem;
-      }
-
-      .card p {
-        margin: 0;
-        font-size: 1.25rem;
-        line-height: 1.5;
-      }
-
-      @media (max-width: 600px) {
-        .grid {
-          width: 100%;
-          flex-direction: column;
-        }
-      }
     `}</style>
 
-    <style jsx global>{`
+      <style jsx global>{`
       html,
       body {
         padding: 0;
         margin: 0;
-        font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-          Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
       }
 
       * {
         box-sizing: border-box;
       }
     `}</style>
-  </div>
-)
+    </div>
+  )
+}
+  
 
 export default Home
